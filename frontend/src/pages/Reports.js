@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,50 +9,63 @@ const Reports = () => {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [data, setData] = useState({});
 
-  // ✅ Fetch students if teacher
-  useEffect(() => {
-    if (user?.role === "teacher") {
-      fetchStudents();
-    } else {
-      fetchOwnReport();
-    }
-  }, []);
-
-  const fetchStudents = async () => {
+  /* ===============================
+     FETCH STUDENTS (Teacher)
+  =============================== */
+  const fetchStudents = useCallback(async () => {
     try {
       const res = await api.get("/students");
       setStudents(res.data);
     } catch (err) {
       console.error("Student fetch error:", err);
     }
-  };
+  }, []);
 
-  // ✅ Student viewing own report
-  const fetchOwnReport = async () => {
+  /* ===============================
+     FETCH OWN REPORT (Student)
+  =============================== */
+  const fetchOwnReport = useCallback(async () => {
     try {
       const res = await api.get("/attendance/overall");
       setData(res.data);
     } catch (err) {
       console.error("Report error:", err);
     }
-  };
+  }, []);
 
-  // ✅ Teacher viewing selected student report
-  const fetchStudentReport = async (studentId) => {
+  /* ===============================
+     FETCH SELECTED STUDENT REPORT
+  =============================== */
+  const fetchStudentReport = useCallback(async (studentId) => {
     try {
       const res = await api.get(`/attendance/overall/${studentId}`);
       setData(res.data);
     } catch (err) {
       console.error("Report error:", err);
     }
-  };
+  }, []);
 
-  // 🔁 Run when teacher selects student
+  /* ===============================
+     RUN WHEN ROLE CHANGES
+  =============================== */
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.role === "teacher") {
+      fetchStudents();
+    } else {
+      fetchOwnReport();
+    }
+  }, [user, fetchStudents, fetchOwnReport]);
+
+  /* ===============================
+     RUN WHEN STUDENT SELECTED
+  =============================== */
   useEffect(() => {
     if (selectedStudent) {
       fetchStudentReport(selectedStudent);
     }
-  }, [selectedStudent]);
+  }, [selectedStudent, fetchStudentReport]);
 
   const getColor = (percentage) => {
     const value = parseFloat(percentage);
@@ -65,7 +78,6 @@ const Reports = () => {
     <div className="report-container">
       <h2 className="report-title">Attendance Report</h2>
 
-      {/* ✅ Teacher Dropdown */}
       {user?.role === "teacher" && (
         <div style={{ marginBottom: "20px" }}>
           <label>Select Student: </label>
