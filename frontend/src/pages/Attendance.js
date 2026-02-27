@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 
@@ -19,18 +19,9 @@ const Attendance = () => {
   const [date, setDate] = useState("");
 
   /* ==============================
-      FETCH STUDENTS WHEN SUBJECT CHANGES
+      FETCH STUDENTS (useCallback FIX)
   ============================== */
-  useEffect(() => {
-    if (selectedSubject) {
-      fetchStudents();
-    } else {
-      setStudents([]);
-      setAttendanceData({});
-    }
-  }, [selectedSubject]);
-
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       const res = await api.get("/students");
 
@@ -39,14 +30,23 @@ const Attendance = () => {
       );
 
       setStudents(filtered);
-
-      // 🔥 DO NOT SET DEFAULT ABSENT
       setAttendanceData({});
-
     } catch (err) {
       console.error("Error fetching students:", err);
     }
-  };
+  }, [selectedSubject]);
+
+  /* ==============================
+      FETCH WHEN SUBJECT CHANGES
+  ============================== */
+  useEffect(() => {
+    if (selectedSubject) {
+      fetchStudents();
+    } else {
+      setStudents([]);
+      setAttendanceData({});
+    }
+  }, [selectedSubject, fetchStudents]);
 
   /* ==============================
       HANDLE ATTENDANCE CHANGE
@@ -65,7 +65,6 @@ const Attendance = () => {
     if (!date) return alert("Please select a date.");
     if (!selectedSubject) return alert("Please select subject.");
 
-    // 🔥 VALIDATE: ensure all students are marked
     for (let student of students) {
       if (!attendanceData[student._id]) {
         return alert(`Please mark attendance for ${student.name}`);
@@ -86,11 +85,9 @@ const Attendance = () => {
 
       alert(`${selectedSubject} saved for ${date}`);
 
-      // DO NOT RESET DATE
       setSelectedSubject("");
       setStudents([]);
       setAttendanceData({});
-
     } catch (err) {
       console.error("Submission Error:", err);
       alert("Error submitting attendance.");
@@ -105,7 +102,6 @@ const Attendance = () => {
     <div className="attendance-page">
       <h2>Mark Attendance</h2>
 
-      {/* DATE */}
       <div className="form-group">
         <label>Select Date:</label>
         <input
@@ -115,7 +111,6 @@ const Attendance = () => {
         />
       </div>
 
-      {/* SUBJECT DROPDOWN */}
       <div className="form-group">
         <label>Select Subject:</label>
         <select
@@ -131,7 +126,6 @@ const Attendance = () => {
         </select>
       </div>
 
-      {/* STUDENTS TABLE */}
       {selectedSubject && students.length > 0 && (
         <>
           <table className="attendance-table">
