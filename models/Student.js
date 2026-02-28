@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const studentSchema = new mongoose.Schema(
   {
-    // 🔥 LINK TO USER LOGIN ACCOUNT
+    // 🔥 OPTIONAL LINK TO USER LOGIN ACCOUNT
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
-      unique: true
+      default: null,   // ✅ NOT required
+      unique: false    // ✅ remove unique restriction
     },
 
     name: {

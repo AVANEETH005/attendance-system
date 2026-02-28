@@ -1138,3 +1138,122 @@ button:hover {
   font-size: 14px;
   color: #374151;
 }
+/* ===========================
+   GLOBAL BACKGROUND
+=========================== */
+
+body {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===========================
+   PAGE CONTAINER
+=========================== */
+
+.dashboard-container {
+  padding: 40px 60px;
+}
+
+.dashboard-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 30px;
+}
+
+/* ===========================
+   STATS GRID
+=========================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* ===========================
+   STAT CARD
+=========================== */
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+}
+
+.stat-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 15px;
+}
+
+.stat-card p {
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===========================
+   ACTION CARD
+=========================== */
+
+.actions-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.btn-dashboard {
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-blue {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: white;
+}
+
+.btn-green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+.btn-dashboard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ===========================
+   RECENT RECORDS CARD
+=========================== */
+
+.recent-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.recent-card h3 {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
