@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 
 const Students = () => {
-
   const [students, setStudents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showSubjects, setShowSubjects] = useState(false);
@@ -24,6 +23,9 @@ const Students = () => {
     "Indian Knowledge Systems"
   ];
 
+  /* =========================
+     FETCH STUDENTS
+  ========================== */
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -37,6 +39,9 @@ const Students = () => {
     }
   };
 
+  /* =========================
+     FORM HANDLERS
+  ========================== */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -61,12 +66,10 @@ const Students = () => {
   /* =========================
      ADD / UPDATE
   ========================== */
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-
       if (editingStudent) {
         await api.put(`/students/${editingStudent._id}`, formData);
       } else {
@@ -75,7 +78,6 @@ const Students = () => {
 
       resetForm();
       fetchStudents();
-
     } catch (error) {
       console.error(error);
       alert("Error saving student");
@@ -85,7 +87,6 @@ const Students = () => {
   /* =========================
      EDIT
   ========================== */
-
   const handleEdit = (student) => {
     setEditingStudent(student);
 
@@ -103,7 +104,6 @@ const Students = () => {
   /* =========================
      DELETE
   ========================== */
-
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this student?")) return;
 
@@ -133,7 +133,7 @@ const Students = () => {
   return (
     <div className="students-container">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="students-header">
         <div>
           <h1>Students Management</h1>
@@ -151,7 +151,7 @@ const Students = () => {
         </button>
       </div>
 
-      {/* Stats */}
+      {/* STATS */}
       <div className="students-stats">
         <div className="stat-card">
           <h3>Total Students</h3>
@@ -159,7 +159,7 @@ const Students = () => {
         </div>
       </div>
 
-      {/* Student List */}
+      {/* STUDENT LIST */}
       {students.length === 0 ? (
         <div className="empty-state">
           <h3>No Students Added Yet</h3>
@@ -170,7 +170,7 @@ const Students = () => {
           {students.map((student) => (
             <div key={student._id} className="student-card">
 
-              <div>
+              <div className="student-info">
                 <h4>{student.name}</h4>
                 <p>{student.email}</p>
                 <p>Roll: {student.rollNumber}</p>
@@ -198,7 +198,7 @@ const Students = () => {
         </div>
       )}
 
-      {/* Modal Form */}
+      {/* MODAL FORM */}
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -248,18 +248,27 @@ const Students = () => {
               </button>
 
               {showSubjects && (
-                <div className="subjects-grid">
-                  {subjectsList.map((subject) => (
-                    <label key={subject} className="subject-chip">
-                      <input
-                        type="checkbox"
-                        value={subject}
-                        checked={formData.subjects.includes(subject)}
-                        onChange={handleSubjectChange}
-                      />
-                      {subject}
-                    </label>
-                  ))}
+                <div className="subjects-wrapper">
+                  <div className="subjects-grid">
+                    {subjectsList.map((subject) => {
+                      const selected = formData.subjects.includes(subject);
+
+                      return (
+                        <label
+                          key={subject}
+                          className={`subject-card ${selected ? "selected" : ""}`}
+                        >
+                          <input
+                            type="checkbox"
+                            value={subject}
+                            checked={selected}
+                            onChange={handleSubjectChange}
+                          />
+                          <span>{subject}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
