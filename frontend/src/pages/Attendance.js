@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
-import "./Attendance.css"; // make sure this is imported
 
 const Attendance = () => {
   const { user } = useAuth();
