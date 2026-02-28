@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
+import "./Attendance.css"; // make sure this is imported
 
 const Attendance = () => {
   const { user } = useAuth();
@@ -19,7 +20,7 @@ const Attendance = () => {
   const [date, setDate] = useState("");
 
   /* ==============================
-      FETCH STUDENTS (useCallback FIX)
+     FETCH STUDENTS
   ============================== */
   const fetchStudents = useCallback(async () => {
     try {
@@ -37,7 +38,7 @@ const Attendance = () => {
   }, [selectedSubject]);
 
   /* ==============================
-      FETCH WHEN SUBJECT CHANGES
+     FETCH WHEN SUBJECT CHANGES
   ============================== */
   useEffect(() => {
     if (selectedSubject) {
@@ -49,7 +50,7 @@ const Attendance = () => {
   }, [selectedSubject, fetchStudents]);
 
   /* ==============================
-      HANDLE ATTENDANCE CHANGE
+     HANDLE ATTENDANCE CHANGE
   ============================== */
   const handleAttendance = (studentId, status) => {
     setAttendanceData(prev => ({
@@ -59,7 +60,7 @@ const Attendance = () => {
   };
 
   /* ==============================
-      SUBMIT ATTENDANCE
+     SUBMIT ATTENDANCE
   ============================== */
   const handleSubmit = async () => {
     if (!date) return alert("Please select a date.");
@@ -102,6 +103,7 @@ const Attendance = () => {
     <div className="attendance-page">
       <h2>Mark Attendance</h2>
 
+      {/* Date */}
       <div className="form-group">
         <label>Select Date:</label>
         <input
@@ -111,6 +113,7 @@ const Attendance = () => {
         />
       </div>
 
+      {/* Subject */}
       <div className="form-group">
         <label>Select Subject:</label>
         <select
@@ -126,21 +129,26 @@ const Attendance = () => {
         </select>
       </div>
 
+      {/* Students Table */}
       {selectedSubject && students.length > 0 && (
         <>
           <table className="attendance-table">
             <thead>
               <tr>
                 <th>Student Name</th>
-                <th>Status</th>
+                <th className="status-header">Status</th>
               </tr>
             </thead>
+
             <tbody>
               {students.map(student => (
                 <tr key={student._id}>
-                  <td>{student.name}</td>
-                  <td>
-                    <label>
+                  <td className="student-name">
+                    {student.name}
+                  </td>
+
+                  <td className="status-cell">
+                    <label className="radio-option">
                       <input
                         type="radio"
                         name={student._id}
@@ -149,10 +157,10 @@ const Attendance = () => {
                           handleAttendance(student._id, "present")
                         }
                       />
-                      Present
+                      <span className="present-text">Present</span>
                     </label>
 
-                    <label style={{ marginLeft: "20px" }}>
+                    <label className="radio-option">
                       <input
                         type="radio"
                         name={student._id}
@@ -161,7 +169,7 @@ const Attendance = () => {
                           handleAttendance(student._id, "absent")
                         }
                       />
-                      Absent
+                      <span className="absent-text">Absent</span>
                     </label>
                   </td>
                 </tr>
@@ -169,7 +177,7 @@ const Attendance = () => {
             </tbody>
           </table>
 
-          <button onClick={handleSubmit}>
+          <button className="save-btn" onClick={handleSubmit}>
             Save Attendance
           </button>
         </>
